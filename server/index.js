@@ -11,23 +11,18 @@ const ejb = require('easy-json-database');
 const DATABASE = new ejb('../database.json');
 // fetch the diamondfire database and parse it
 let dfdb = {};
-let fetch;
-import('node-fetch').then(x => {
-    fetch = x.default;
-    fetch('https://dfonline.dev/public/db.json').then(res => res.json()).then(json => {dfdb = json;});
-});
+require('axios').default.get('https://dfonline.dev/public/db.json').then(res => {dfdb = res.data;});
+
 
 
 // create http server
 const { createServer } = require('http');
 const server = createServer(async function(req, res){
     const PATH = req.url.split('/').splice(2);
-    
-    // if the request is from dfonline.dev or localhost
-    if(req.headers.host.includes('localhost') || req.headers.host.includes('dfonline.dev')) {
-        // set cors to allow all
-        res.setHeader('Access-Control-Allow-Origin', '*');
-    }
+
+    // setup cors
+    res.setHeader("Access-Control-Allow-Origin", "https://dfonline.dev, http://localhost:8080");
+    res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
     // read the body
     const buffers = [];
@@ -41,7 +36,6 @@ const server = createServer(async function(req, res){
         // check if its a post
         if(req.method === 'POST') {
             try {
-                debugger;
                 // decode the base64'd gzip data with zlib
                 var decoded = zlib.gunzipSync(Buffer.from(body, 'base64')).toString();
                 // parse the json
