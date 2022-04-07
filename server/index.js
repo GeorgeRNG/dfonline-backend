@@ -7,7 +7,7 @@
 
 const ejb = require('easy-json-database');
 const DATABASE = new ejb('../database.json');
-const pako = require('pako');
+const pako = require('./pako.min.js');
 // fetch the diamondfire database and parse it
 let dfdb = {};
 let fetch;
