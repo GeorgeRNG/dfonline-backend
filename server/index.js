@@ -39,8 +39,6 @@ const server = createServer(async function(req, res){
     if(PATH[0] === 'save') {
         // check if its a post
         if(req.method === 'POST') {
-            debugger;
-
             try {
                 // decode the base64'd gzip data with pako
                 var decoded = pako.inflate(Buffer.from(body, 'base64'), {to: 'string'});
@@ -72,7 +70,7 @@ const server = createServer(async function(req, res){
             }
 
         }
-        else if(req.method === 'GET') {
+        else if(req.method === 'GET') { 
             res.setHeader('content-type', 'application/json');
             var data = DATABASE.get('shortTemplates.' + PATH[1]);
             var message = data ? 'Success.' : 'No data found.';
