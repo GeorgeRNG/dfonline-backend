@@ -13,15 +13,13 @@ const DATABASE = new ejb('../database.json');
 let dfdb = {};
 require('axios').default.get('https://dfonline.dev/public/db.json').then(res => {dfdb = res.data;});
 
-
-
 // create http server
 const { createServer } = require('http');
 const server = createServer(async function(req, res){
     const PATH = req.url.split('/').splice(2);
 
     // setup cors
-    res.setHeader("Access-Control-Allow-Origin", "https://dfonline.dev, http://localhost:8080");
+    res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
     // read the body
