@@ -15,6 +15,7 @@
   "homepage": "https://github.com/GeorgeRNG/dfonline-backend#readme",
   "dependencies": {
     "easy-json-database": "^1.5.0",
-    "node-fetch": "^3.2.3"
+    "node-fetch": "^3.2.3",
+    "zlib": "^1.0.5"
   }
 }

@@ -1,13 +1,14 @@
 'use strict';
+'@ts-check';
 
 // redirect the stdout and stderr to ./log.log
 // var access = require('fs').createWriteStream('./log.log');
 // process.stdout.write = access.write.bind(access);
 // process.stderr.write = access.write.bind(access);
 
+const zlib = require('zlib');
 const ejb = require('easy-json-database');
 const DATABASE = new ejb('../database.json');
-const pako = require('./pako.min.js');
 // fetch the diamondfire database and parse it
 let dfdb = {};
 let fetch;
@@ -40,8 +41,9 @@ const server = createServer(async function(req, res){
         // check if its a post
         if(req.method === 'POST') {
             try {
-                // decode the base64'd gzip data with pako
-                var decoded = pako.inflate(Buffer.from(body, 'base64'), {to: 'string'});
+                debugger;
+                // decode the base64'd gzip data with zlib
+                var decoded = zlib.gunzipSync(Buffer.from(body, 'base64')).toString();
                 // parse the json
                 var parsed = JSON.parse(decoded);
                 // check if the parsed data is a valid, blocks being an array always
