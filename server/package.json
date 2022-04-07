@@ -1,0 +1,21 @@
+{
+  "name": "dfonline-backend",
+  "version": "1.0.0",
+  "description": "A backend server for dfonline",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GeorgeRNG/dfonline-backend.git"
+  },
+  "author": "GeorgeRNG",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GeorgeRNG/dfonline-backend/issues"
+  },
+  "homepage": "https://github.com/GeorgeRNG/dfonline-backend#readme",
+  "dependencies": {
+    "easy-json-database": "^1.5.0",
+    "node-fetch": "^3.2.3",
+    "pako": "^2.0.4"
+  }
+}
