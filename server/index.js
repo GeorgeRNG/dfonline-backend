@@ -1,10 +1,12 @@
 'use strict';
 '@ts-check';
 
-// redirect the stdout and stderr to ./log.log
-// var access = require('fs').createWriteStream('./log.log');
-// process.stdout.write = access.write.bind(access);
-// process.stderr.write = access.write.bind(access);
+// redirect the stdout and stderr to ./log.log if nodejs is run in development mode
+if(process.env.NODE_ENV === 'development') {
+    var access = require('fs').createWriteStream('./log.log');
+    process.stdout.write = access.write.bind(access);
+    process.stderr.write = access.write.bind(access);
+}
 
 const zlib = require('zlib');
 const ejb = require('easy-json-database');
