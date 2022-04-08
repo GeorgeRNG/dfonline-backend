@@ -22,8 +22,7 @@ require('axios').default.get('https://dfonline.dev/public/db.json').then(respons
 const { createServer } = require('http');
 const server = createServer(async function(req, res){
     const PATH = req.url.split('/').splice(2);
-
-    console.log(req.headers.origin);
+    
     // if the request originated from dfonline.dev or localhost:1234
     let safe = false;
     if(req.headers.origin === 'https://dfonline.dev' || req.headers.origin === 'http://localhost:1234'){
