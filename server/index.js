@@ -22,9 +22,17 @@ const { createServer } = require('http');
 const server = createServer(async function(req, res){
     const PATH = req.url.split('/').splice(2);
 
-    // setup cors
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    console.log(req.headers.origin);
+    // if the request originated from dfonline.dev or localhost:1234
+    let safe = false;
+    if(req.headers.origin === 'https://dfonline.dev' || req.headers.origin === 'http://localhost:1234'){
+        safe = true;
+        // set CORS to allow it
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+        res.setHeader('Access-Control-Allow-Credentials', true);
+    }
 
     // read the body
     const buffers = [];
@@ -37,36 +45,44 @@ const server = createServer(async function(req, res){
     if(PATH[0] === 'save') {
         // check if its a post
         if(req.method === 'POST') {
-            try {
-                // decode the base64'd gzip data with zlib
-                var decoded = zlib.gunzipSync(Buffer.from(body, 'base64')).toString();
-                // parse the json
-                var parsed = JSON.parse(decoded);
-                // check if the parsed data is a valid, blocks being an array always
-                if(!Array.isArray(parsed.blocks)) {
-                    throw new Error('Invalid data');
-                }
+            if(safe) {
+                try {
+                    // decode the base64'd gzip data with zlib
+                    var decoded = zlib.gunzipSync(Buffer.from(body, 'base64')).toString();
+                    // parse the json
+                    var parsed = JSON.parse(decoded);
+                    // check if the parsed data is a valid, blocks being an array always
+                    if(!Array.isArray(parsed.blocks)) {
+                        throw new Error('Invalid data');
+                    }
 
-                // set the response header to json
+                    // set the response header to json
+                    res.setHeader('Content-Type', 'application/json');
+                    // check and get the duplicate data object key
+                    var duped = Object.keys(DATABASE.get('shortTemplates')).find(key => DATABASE.get('shortTemplates')[key] === body);
+                    // create a random youtube like id if it isn't a dupe
+                    const ID = !duped ? Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15) : duped;
+                    // save the data
+                    DATABASE.set('shortTemplates.' + ID, body);
+                    // end the response
+                    res.end(JSON.stringify({
+                        id: ID
+                    }));
+                } catch(e) {
+                    res.setHeader('Content-Type', 'application/json');
+                    res.statusCode = 400;
+                    res.end(JSON.stringify({
+                        error: 'Invalid data'
+                    }));
+                }
+            }
+            else{
                 res.setHeader('Content-Type', 'application/json');
-                // check and get the duplicate data object key
-                var duped = Object.keys(DATABASE.get('shortTemplates')).find(key => DATABASE.get('shortTemplates')[key] === body);
-                // create a random youtube like id if it isn't a dupe
-                const ID = !duped ? Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15) : duped;
-                // save the data
-                DATABASE.set('shortTemplates.' + ID, body);
-                // end the response
+                res.statusCode = 403;
                 res.end(JSON.stringify({
-                    id: ID
-                }));
-            } catch(e) {
-                res.setHeader('Content-Type', 'application/json');
-                res.statusCode = 400;
-                res.end(JSON.stringify({
-                    error: 'Invalid data'
+                    error: 'Forbidden'
                 }));
             }
-
         }
         else if(req.method === 'GET') { 
             res.setHeader('content-type', 'application/json');
