@@ -34,6 +34,12 @@ web.get("/db", (req, res) => {
     res.json(dfdb);
 });
 
+const rateLimit = require('express-rate-limit')({
+    windowMs: 5 * 60 * 1000, // 5 minutes
+    max: 50, // limit each IP to 50 requests per windowMs
+    message: { error: "Too many requests." }
+});
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //* GET /save/:id
@@ -48,7 +54,7 @@ web.get("/save/:id", async (req, res) => {
 });
 
 //* POST /save
-web.post("/save", async (req, res) => {
+web.post("/save", rateLimit /* rate limit middleware */, async (req, res) => {
     if(!allowedOrigins.includes(`${req.headers.origin}`)) return res.status(403).json({error: 'Forbidden.'})
     try {
         const raw = req.body;
