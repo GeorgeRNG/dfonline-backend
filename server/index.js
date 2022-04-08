@@ -10,8 +10,7 @@ const zlib = require('zlib');
 const ejb = require('easy-json-database');
 const DATABASE = new ejb('../database.json');
 // fetch the diamondfire database and parse it
-let dfdb = {};
-require('axios').default.get('https://dfonline.dev/public/db.json').then(res => {dfdb = res.data;});
+let dfdb = require('axios').default.get('https://dfonline.dev/public/db.json').data
 
 // create http server
 const { createServer } = require('http');
