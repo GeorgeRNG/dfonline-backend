@@ -8,7 +8,7 @@ if(process.env.NODE_ENV === 'development') {
     process.stderr.write = access.write.bind(access);
 }
 
-const zlib = require('zlib');
+const pako = require('pako');
 const ejb = require('easy-json-database');
 const DATABASE = new ejb('../database.json');
 // fetch the diamondfire database and parse it
@@ -48,8 +48,8 @@ const server = createServer(async function(req, res){
         if(req.method === 'POST') {
             if(safe) {
                 try {
-                    // decode the base64'd gzip data with zlib
-                    const decoded = zlib.gunzipSync(Buffer.from(body, 'base64')).toString();
+                    // decode the base64'd gzip data with pako
+                    const decoded = pako.inflate(Buffer.from(body, 'base64'), { to: 'string' });
                     // parse the json
                     const parsed = JSON.parse(decoded);
                     // check if the parsed data is a valid, blocks being an array always
