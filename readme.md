@@ -19,7 +19,7 @@ The response is a JSON object:
 or it will be
 ```ts
 {
-    "error": "Invalid data" // the only possible error.
+    "error": "Invalid data" | "Forbidden"
 }
 ```  
 
