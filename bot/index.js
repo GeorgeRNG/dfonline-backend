@@ -56,6 +56,10 @@ client.on('messageCreate', message => {
                 }
             }
         }
+
+        if(command === "when"){
+            message.reply("never.");;;;;;;;;;;;;;;;
+        }
     }
 });
 
