@@ -1,9 +1,9 @@
 'use strict';
 '@ts-check';
 
-// redirect the stdout and stderr to ./log.log if nodejs is run in development mode
+// redirect the stdout and stderr to ./stdout.log if nodejs is run in development mode
 if(process.env.NODE_ENV === 'development') {
-    var access = require('fs').createWriteStream('./log.log');
+    var access = require('fs').createWriteStream('./stdout.log');
     process.stdout.write = access.write.bind(access);
     process.stderr.write = access.write.bind(access);
 }
@@ -15,8 +15,7 @@ const DATABASE = new ejb('../database.json');
 let dfdb = {};
 require('axios').default.get('https://dfonline.dev/public/db.json').then(response => {
     dfdb = response.data;
-    console.log('Fetched the database.')
-    // console.log(dfdb);
+    console.log('Fetched the database.');
 });
 
 // create http server
@@ -50,9 +49,9 @@ const server = createServer(async function(req, res){
             if(safe) {
                 try {
                     // decode the base64'd gzip data with zlib
-                    var decoded = zlib.gunzipSync(Buffer.from(body, 'base64')).toString();
+                    const decoded = zlib.gunzipSync(Buffer.from(body, 'base64')).toString();
                     // parse the json
-                    var parsed = JSON.parse(decoded);
+                    const parsed = JSON.parse(decoded);
                     // check if the parsed data is a valid, blocks being an array always
                     if(!Array.isArray(parsed.blocks)) {
                         throw new Error('Invalid data');
@@ -61,7 +60,7 @@ const server = createServer(async function(req, res){
                     // set the response header to json
                     res.setHeader('Content-Type', 'application/json');
                     // check and get the duplicate data object key
-                    var duped = Object.keys(DATABASE.get('shortTemplates')).find(key => DATABASE.get('shortTemplates')[key] === body);
+                    const duped = Object.keys(DATABASE.get('shortTemplates')).find(key => DATABASE.get('shortTemplates')[key] === body);
                     // create a random youtube like id if it isn't a dupe
                     const ID = !duped ? Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15) : duped;
                     // save the data
@@ -88,8 +87,8 @@ const server = createServer(async function(req, res){
         }
         else if(req.method === 'GET') { 
             res.setHeader('content-type', 'application/json');
-            var data = DATABASE.get('shortTemplates.' + PATH[1]);
-            var message = data ? 'Success.' : 'No data found.';
+            const data = DATABASE.get('shortTemplates.' + PATH[1]);
+            const message = data ? 'Success.' : 'No data found.';
             res.end(JSON.stringify({
                 code: PATH[1],
                 message: message,
