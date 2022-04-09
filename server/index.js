@@ -11,8 +11,7 @@ if(process.env.NODE_ENV === 'development') {
 const pako = require('pako');
 const ejb = require('easy-json-database');
 const DATABASE = new ejb('../database.json');
-let dfdb = {}; require('axios').default.get('https://dfonline.dev/public/db.json').then(response => {dfdb = response.data;});
-console.log('Fetched the database.');
+let dfdb = {}; require('axios').default.get('https://dfonline.dev/public/db.json').then(response => {dfdb = response.data; console.log('Fetched the database.');});
 
 // create http server
 const express = require('express');
@@ -23,14 +22,14 @@ const allowedOrigins = [
     "http://dfonline.dev",
     "localhost",
     "undefined" // localhost can be undefined
-]
+];
 
 // body parsers
 web.use(express.json());
 web.use(express.urlencoded({ extended: true }));
 web.use(express.text());
 
-web.get("/db", (req, res) => {
+web.get("*/db", (_req, res) => {
     res.json(dfdb);
 });
 
@@ -43,19 +42,19 @@ const rateLimit = require('express-rate-limit')({
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //* GET /save/:id
-web.get("/save/:id", async (req, res) => {
+web.get("*/save/:id", async (req, res) => {
     const data = DATABASE.get('shortTemplates.' + req.params.id);
     const message = data ? 'Success.' : 'No data found.';
     res.json({
         code: req.params.id,
         message: message,
         data: data,
-    })
+    });
 });
 
 //* POST /save
-web.post("/save", rateLimit /* rate limit middleware */, async (req, res) => {
-    if(!allowedOrigins.includes(`${req.headers.origin}`)) return res.status(403).json({error: 'Forbidden.'})
+web.post("*/save", rateLimit /* rate limit middleware */, async (req, res) => {
+    if(!allowedOrigins.includes(`${req.headers.origin}`)) return res.status(403).json({error: 'Forbidden.'});
     try {
         const raw = req.body;
         const parsed = JSON.parse(String.fromCharCode.apply(null, new Uint16Array(pako.inflate(new Uint8Array(atob(raw).split("").map(x => x.charCodeAt(0)))))).replace(/Â§/g,'\u00A7'));
