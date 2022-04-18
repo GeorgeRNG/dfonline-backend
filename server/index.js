@@ -23,7 +23,8 @@ const allowedOrigins = [
     "http://localhost",
     "http://localhost:8080",
     "http://localhost:1234",
-    "undefined" // localhost can be undefined
+    "undefined", // localhost can be undefined
+    undefined,
 ];
 
 web.use(cors({'origin': (origin, callback) => {
