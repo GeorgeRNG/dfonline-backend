@@ -19,10 +19,19 @@ const web = express();
 
 const allowedOrigins = [
     "https://dfonline.dev",
-    "http://dfonline.dev",
-    "localhost",
+    "http://localhost",
+    "http://localhost:8080",
+    "http://localhost:1234",
     "undefined" // localhost can be undefined
 ];
+
+web.use(require('cors')({'origin': (origin, callback) => {
+    if(allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+    } else {
+        callback(new Error('Not allowed by CORS'));
+    }
+}}));
 
 // body parsers
 web.use(express.json());
