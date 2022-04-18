@@ -8,6 +8,7 @@ if(process.env.NODE_ENV === 'development') {
     process.stderr.write = access.write.bind(access);
 }
 
+const cors = require('cors');
 const pako = require('pako');
 const ejb = require('easy-json-database');
 const DATABASE = new ejb('../database.json');
@@ -25,7 +26,7 @@ const allowedOrigins = [
     "undefined" // localhost can be undefined
 ];
 
-web.use(require('cors')({'origin': (origin, callback) => {
+web.use(cors({'origin': (origin, callback) => {
     if(allowedOrigins.indexOf(origin) !== -1) {
         callback(null, true);
     } else {
@@ -38,7 +39,7 @@ web.use(express.json());
 web.use(express.urlencoded({ extended: true }));
 web.use(express.text());
 
-web.get("*/db", (_req, res) => {
+web.get("*/db", cors(), (_req, res) => {
     res.json(dfdb);
 });
 
