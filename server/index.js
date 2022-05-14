@@ -1,5 +1,5 @@
 'use strict';
-'@ts-check';
+// @ts-check
 
 // redirect the stdout and stderr to ./stdout.log if nodejs is run in development mode
 if(process.env.NODE_ENV === 'development') {
@@ -12,7 +12,7 @@ const cors = require('cors');
 const pako = require('pako');
 const ejb = require('easy-json-database');
 const DATABASE = new ejb('../database.json');
-let dfdb = {}; require('axios').default.get('https://dfonline.dev/public/db.json').then(response => {dfdb = response.data; console.log('Fetched the database.');});
+let dfdb = {}; require('axios').default.get('https://dfonline.dev/public/dbc.json').then(response => {dfdb = response.data; console.log('Fetched the database.');});
 
 // create http server
 const express = require('express');
@@ -24,7 +24,7 @@ const allowedOrigins = [
     "http://localhost:8080",
     "http://localhost:1234",
     "undefined", // localhost can be undefined
-    undefined,
+    undefined ,
 ];
 
 web.use(cors({'origin': (origin, callback) => {
