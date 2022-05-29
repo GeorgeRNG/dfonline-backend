@@ -5,3 +5,5 @@ database.json
 stderr.log
 stdout.log
 tests.http
+.gitignore
+.replit
